@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+ >
+    
+  <LinearLayout 
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    > 
+  <TableLayout android:id="@+id/registration_table"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:stretchColumns="1">
+
+    <TableRow android:layout_width="match_parent" android:minHeight="60px" android:layout_weight="1">
+
+      <TextView android:layout_column="1" android:text="Name 姓名 "  android:textStyle="bold|italic" android:textSize="16sp"
+        android:padding="3dip"  />
+      <EditText android:id="@+id/name" android:tag="1"
+        android:gravity="left" android:padding="3dip" android:hint="enter name 姓名 " android:inputType="text" android:layout_width="wrap_content"/>
+    </TableRow>
+
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Phone 电话" android:textStyle="bold|italic" android:textSize="16sp"
+        android:padding="3dip" />
+      <EditText android:id="@+id/phone" android:tag="2"
+        android:gravity="left" android:padding="3dip" android:hint="enter phone number 电话" android:inputType="number"  android:layout_width="wrap_content"/>
+    </TableRow>
+    
+
+    
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Gender 性别" android:textStyle="bold|italic" android:textSize="16sp"
+        android:padding="3dip" />
+      
+       <RadioGroup
+        android:id="@+id/radioGender" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:tag="4"
+        android:gravity="left" android:padding="3dip" >"
+ 
+        <RadioButton
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/radioMale"
+            android:text="Male" 
+            android:checked="true" />
+ 
+        <RadioButton
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/radioFemale"
+            android:text="Female" />
+ 
+    </RadioGroup>
+   
+        
+    </TableRow>
+    
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Age 年龄" android:textStyle="bold|italic" android:textSize="16sp"
+        android:padding="3dip" />
+      <EditText android:id="@+id/age" android:tag="5"
+        android:gravity="left" android:padding="3dip" android:hint="enter your age 年龄" android:inputType="number"  android:layout_width="wrap_content"/>
+      </TableRow>
+      
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Email 邮箱" android:textStyle="bold|italic" android:textSize="16sp"
+        android:padding="3dip" />
+      <EditText android:id="@+id/email" android:tag="6"
+        android:gravity="left" android:padding="3dip" android:hint="enter your mail Id 邮箱" android:inputType="text"  android:layout_width="wrap_content"/>
+      </TableRow>
+      
+
+    
+    </TableLayout>  
+
+
+ <Button
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:id="@+id/register"
+     android:text="Register 注册"
+     android:layout_gravity="center"
+     android:padding="15dip"
+     android:onClick="register"
+     />
+    
+</LinearLayout>
+</ScrollView>
