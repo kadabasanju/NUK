@@ -32,6 +32,7 @@ public ArrayList<Cluster> getClusterList(ArrayList<Cluster> clu, long endTime){
 	 ArrayList<Cluster> resultNodes = new ArrayList<Cluster>();
 	 Collections.sort( clu, new DateComparator());	
     Cluster temp = clu.get(0);
+	//System.out.println(clu.get(clu.size()-1).getTime());
    	int cluLen = clu.size()-1;
    	ArrayList<Cluster> tempArray = new ArrayList<Cluster>();
    //Checking for time where there is no data:
@@ -58,7 +59,7 @@ public ArrayList<Cluster> getClusterList(ArrayList<Cluster> clu, long endTime){
    		Cluster next = clu.get(i+1);
    		long timeDiff = next.getTime() - temp.getTime();
    		
-   		if(next.getAccuracy()>200||timeDiff<180000){
+   		if(next.getAccuracy()>200){
    			continue;
    		}
    		Location startLoc = new Location("");
@@ -74,7 +75,7 @@ public ArrayList<Cluster> getClusterList(ArrayList<Cluster> clu, long endTime){
    		maxDist = Math.max(maxDist, 50.0);
    		
    		if(dist <= maxDist)
-   		{	double latAvg1=0, longAvg1=0, accuracy1 =0, altitude = 0;
+   		{	double latAvg1=0, longAvg1=0, accuracy1 =0;
    			if(tempArray.size()<=1){
    			 latAvg1 = (temp.getLatitude() + next.getLatitude())/2;
 			longAvg1 = (temp.getLongitude() + next.getLongitude())/2;

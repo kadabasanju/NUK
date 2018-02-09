@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
@@ -123,7 +124,8 @@ public class RegistrationActivity extends Activity {
 
 							try {
 								sendHttpPost(userData);
-								if (httpRes == 1) {
+								/*System.out.println(httpRes);
+								if (res == 1) {
 
 									sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 									Editor editor = sharedpreferences.edit();
@@ -140,7 +142,7 @@ public class RegistrationActivity extends Activity {
 									Toast.makeText(getApplicationContext(), "Error Registering! Please try again. Make sure you have internet access", Toast.LENGTH_SHORT).show();
 									return;
 
-								}
+								}*/
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
@@ -162,11 +164,11 @@ public class RegistrationActivity extends Activity {
      
 	}
 
-int httpRes =0;
-	private void sendHttpPost(String[] data) throws JSONException {
+
+	private void sendHttpPost(final String[] data) throws JSONException {
 
 
-
+		int res =0;
 		JSONArray jsonArray = new JSONArray();
 		try{
 
@@ -192,15 +194,32 @@ int httpRes =0;
 		String url = ApiUrl.insertUserUrl;
 
 
-
+		RequestFuture<JSONObject> future = RequestFuture.newFuture();
 		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
 				new Response.Listener<String>()
 				{
 					@Override
 					public void onResponse(String response) {
 						// response
-						httpRes = Integer.valueOf(response);
-						Log.d("Response", response);
+						int res = Integer.valueOf(response);
+						if(res == 1) {
+							sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+							Editor editor = sharedpreferences.edit();
+							editor.putString("DEVICE_ID", data[0]);
+
+							editor.commit();
+
+							Intent cluster = new Intent(getApplicationContext(), MainActivity.class);
+							cluster.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(cluster);
+							finish();
+							Log.d("Response", response);
+						}
+						else {
+							Toast.makeText(getApplicationContext(), "Error Registering! Please try again. Make sure you have internet access", Toast.LENGTH_SHORT).show();
+							Log.d("Error.Response",response);
+							return;
+						}
 					}
 				},
 				new Response.ErrorListener()
@@ -208,7 +227,10 @@ int httpRes =0;
 					@Override
 					public void onErrorResponse(VolleyError error) {
 						// error
+						Toast.makeText(getApplicationContext(), "Error Registering! Please try again. Make sure you have internet access", Toast.LENGTH_SHORT).show();
 						Log.d("Error.Response", error.toString());
+						return;
+
 					}
 				}
 		) {
@@ -226,6 +248,8 @@ int httpRes =0;
 
 // Adding the request to the queue along with a unique string tag
 		MyApp.getInstance().addToRequestQueue(postRequest, "postRequest");
+
+
 
 	}
 }

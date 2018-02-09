@@ -178,6 +178,9 @@ private int sendHttpPost(final ArrayList<Data>data) throws JSONException {
 			formDetailsJson.put("battery", data.get(i).getBattery());
 			formDetailsJson.put("light", data.get(i).getLight());
 			formDetailsJson.put("wifiAP", data.get(i).getWifiAPs());
+			formDetailsJson.put("gAct", data.get(i).getgAct());
+			formDetailsJson.put("socioAct", data.get(i).getSocio_activity());
+			formDetailsJson.put("decibel", data.get(i).getDecibel());
 
 			jsonArray.put(formDetailsJson);
 
