@@ -10,18 +10,26 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="dev.sutd.timelinedemo.MainActivity"
+    tools:context=".TimeLineActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to TimeLine!" />
+        android:id="@+id/date_text"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:textStyle="bold|italic"
+        android:text="Welcome to TimeLine!"
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true"
+        />
 
     <ListView
         android:id="@+id/timeline_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/date_text"
         android:divider="@null"
         android:dividerHeight="0dp" />
 </RelativeLayout>

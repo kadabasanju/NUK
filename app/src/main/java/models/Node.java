@@ -6,6 +6,7 @@ package models;
 public class Node {
     private long time;
     private String activity;
+    private long endTime;
 
 
     public void setTime(long time) {
@@ -35,5 +36,12 @@ public class Node {
     }
 
 
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
 }
 

@@ -21,7 +21,7 @@ public class ClusterAlgoNew {
 	{
 		this.context = cont;
 		sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-		int du = sharedpreferences.getInt("CLUSTER_DURATION", 20);
+		int du = sharedpreferences.getInt("CLUSTER_DURATION", 15);
 		cluDuration = du*60;
 	}
 	

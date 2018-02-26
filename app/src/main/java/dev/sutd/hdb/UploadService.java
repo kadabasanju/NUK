@@ -26,17 +26,19 @@ import RestfulUploads.ConnectionDetector;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import models.Data;
+import models.GeoActivity;
+import models.Sound;
 
 public class UploadService extends Service {
 	
 	 
-	 final int maxNumber = 1000;
+	 final int maxNumber = 10000;
 	 SharedPreferences sharedPref;
 	 String device_id;
 	 String ip;
 	String callType="";
 	String userId;
-
+	Realm realm;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -76,7 +78,7 @@ public class UploadService extends Service {
 				if(connected)
 				{
 					System.out.println("Connected");
-
+					realm = RealmController.with(MyApp.getInstance()).getRealm();
 					uploadData();
 
 
@@ -111,7 +113,7 @@ public class UploadService extends Service {
 	    	
 	      		//Log.i("success", "uploading");
 
-				Realm realm = RealmController.with(MyApp.getInstance()).getRealm();
+				//Uploading location data
 				RealmResults<Data> results =RealmController.with(MyApp.getInstance()).getPendingUpload();
 
 					int numOfLoops = (results.size()/maxNumber) +1;
@@ -130,25 +132,63 @@ public class UploadService extends Service {
 							}
 
 							tempAa.add(results.get(k));
+							System.out.println(results.get(k).getTime());
 						}
-
-						//}
-						int result = sendHttpPost(tempAa);
-
-						// Once the data is uploaded to server, just update the uploaded value on the database!
-						if(result==1){
-							System.out.println("Updating the uploaded!! Number of records:" + tempAa.size());
-							for(int i=0; i<tempAa.size();i++) {
-								System.out.println(tempAa.get(i).getTime());
-								Data d = tempAa.get(i);
-								realm.beginTransaction();
-								d.setUploaded(1);
-								realm.commitTransaction();
-							}
-						}
-
+						sendHttpPost(tempAa);
 
 					}
+
+
+				// Uploading geoactivity data
+				RealmResults<GeoActivity> geoResults =RealmController.with(MyApp.getInstance()).getGeoPendingUpload();
+
+				numOfLoops = (geoResults.size()/maxNumber) +1;
+				if(geoResults.size()%maxNumber==0){
+					numOfLoops -= 1;
+				}
+
+				for(int j = 0; j<numOfLoops; j++){
+					int maxIndex = (j+1)*maxNumber > geoResults.size()?geoResults.size():(j+1)*maxNumber;
+					ArrayList<GeoActivity>tempga = new ArrayList();
+
+					for(int k =j*maxNumber; k<maxIndex; k++) {
+						if (geoResults.get(k) == null) {
+							break;
+						}
+
+						tempga.add(geoResults.get(k));
+
+					}
+
+
+					sendHttpGeoPost(tempga);
+				}
+
+
+		// Uploading sound data
+		RealmResults<Sound> soundResults =RealmController.with(MyApp.getInstance()).getSoundPendingUpload();
+
+		numOfLoops = (soundResults.size()/maxNumber) +1;
+		if(soundResults.size()%maxNumber==0){
+			numOfLoops -= 1;
+		}
+
+		for(int j = 0; j<numOfLoops; j++){
+			int maxIndex = (j+1)*maxNumber > soundResults.size()?soundResults.size():(j+1)*maxNumber;
+			ArrayList<Sound>tempsa = new ArrayList();
+
+			for(int k =j*maxNumber; k<maxIndex; k++) {
+				if (soundResults.get(k) == null) {
+					break;
+				}
+
+				tempsa.add(soundResults.get(k));
+			}
+
+
+			sendHttpSoundPost(tempsa);
+		}
+
 	  		
  	
 
@@ -156,82 +196,225 @@ public class UploadService extends Service {
 	}
 
 
-	int httpRes = 0;
-private int sendHttpPost(final ArrayList<Data>data) throws JSONException {
+
+	private void sendHttpPost(final ArrayList<Data>data) throws JSONException {
 
 
 
-	JSONArray jsonArray = new JSONArray();
-	try{
-		for(int i = 0; i < data.size(); i++){
-			JSONObject formDetailsJson = new JSONObject();
-			formDetailsJson.put("deviceId", userId);
-			formDetailsJson.put("latitude", data.get(i).getLatitude());
-			formDetailsJson.put("longitude", data.get(i).getLongitude());
-			formDetailsJson.put("time", data.get(i).getTime());
-			formDetailsJson.put("speed", data.get(i).getSpeed());
-			formDetailsJson.put("altitude", data.get(i).getAltitude());
-			formDetailsJson.put("accuracy",data.get(i).getAccuracy());
-			formDetailsJson.put("activity",data.get(i).getActivity());
-			formDetailsJson.put("network_id", data.get(i).getNetwork_id());
-			formDetailsJson.put("ip_address", data.get(i).getIp_address());
-			formDetailsJson.put("battery", data.get(i).getBattery());
-			formDetailsJson.put("light", data.get(i).getLight());
-			formDetailsJson.put("wifiAP", data.get(i).getWifiAPs());
-			formDetailsJson.put("gAct", data.get(i).getgAct());
-			formDetailsJson.put("socioAct", data.get(i).getSocio_activity());
-			formDetailsJson.put("decibel", data.get(i).getDecibel());
+		JSONArray jsonArray = new JSONArray();
+		try{
+			for(int i = 0; i < data.size(); i++){
+				JSONObject formDetailsJson = new JSONObject();
+				formDetailsJson.put("deviceId", userId);
+				formDetailsJson.put("latitude", data.get(i).getLatitude());
+				formDetailsJson.put("longitude", data.get(i).getLongitude());
+				formDetailsJson.put("time", data.get(i).getTime());
+				formDetailsJson.put("speed", data.get(i).getSpeed());
+				formDetailsJson.put("altitude", data.get(i).getAltitude());
+				formDetailsJson.put("accuracy",data.get(i).getAccuracy());
+				formDetailsJson.put("wifiAP", data.get(i).getWifiAPs());
+				jsonArray.put(formDetailsJson);
 
-			jsonArray.put(formDetailsJson);
+			}
+
+		}catch(Exception e){
 
 		}
+		//System.out.println(jsonArray.toString());
 
-	}catch(Exception e){
+		final String dataString = jsonArray.toString();
+
+		String url = ApiUrl.insertDataUrl;
+
+
+
+		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+				new Response.Listener<String>()
+				{
+					@Override
+					public void onResponse(String response) {
+						// response
+						int httpRes = Integer.valueOf(response);
+						if(httpRes==1) {
+							for (int i = 0; i < data.size(); i++) {
+								//System.out.println(tempAa.get(i).getTime());
+								Data d = data.get(i);
+								realm.beginTransaction();
+								d.setUploaded(1);
+								realm.commitTransaction();
+							}
+						}
+					}
+				},
+				new Response.ErrorListener()
+				{
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// error
+						//Log.d("Error.Response", error.toString());
+					}
+				}
+		) {
+			@Override
+			protected Map<String, String> getParams()
+			{
+				Map<String, String>  params = new HashMap<String, String>();
+				params.put("data", dataString);
+
+
+				return params;
+			}
+		};
+		//queue.add(postRequest);
+
+	// Adding the request to the queue along with a unique string tag
+		MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
 
 	}
-	System.out.println(jsonArray.toString());
 
-	final String dataString = jsonArray.toString();
-
-	String url = ApiUrl.insertDataUrl;
+	private void sendHttpGeoPost(final ArrayList<GeoActivity>data) throws JSONException {
 
 
 
-	StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-			new Response.Listener<String>()
-			{
-				@Override
-				public void onResponse(String response) {
-					// response
-					httpRes = Integer.valueOf(response);
-					//Log.d("Response", response);
-				}
-			},
-			new Response.ErrorListener()
-			{
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					// error
-					//Log.d("Error.Response", error.toString());
-				}
+		JSONArray jsonArray = new JSONArray();
+		try{
+			for(int i = 0; i < data.size(); i++){
+				JSONObject formDetailsJson = new JSONObject();
+				formDetailsJson.put("deviceId", userId);
+				formDetailsJson.put("time", data.get(i).getTime());
+				formDetailsJson.put("activity",data.get(i).getnAct());
+				formDetailsJson.put("gAct", data.get(i).getgAct());
+				jsonArray.put(formDetailsJson);
+
 			}
-	) {
-		@Override
-		protected Map<String, String> getParams()
-		{
-			Map<String, String>  params = new HashMap<String, String>();
-			params.put("data", dataString);
 
+		}catch(Exception e){
 
-			return params;
 		}
-	};
-	//queue.add(postRequest);
 
-// Adding the request to the queue along with a unique string tag
-	MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
-return httpRes;
-}
+
+		final String dataString = jsonArray.toString();
+
+		String url = ApiUrl.insertDataUrl;
+
+
+
+		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+				new Response.Listener<String>()
+				{
+					@Override
+					public void onResponse(String response) {
+						// response
+						int httpRes = Integer.valueOf(response);
+						if(httpRes==1) {
+							for (int i = 0; i < data.size(); i++) {
+								//System.out.println(tempAa.get(i).getTime());
+								GeoActivity d = data.get(i);
+								realm.beginTransaction();
+								d.setUploaded(1);
+								realm.commitTransaction();
+							}
+						}
+					}
+				},
+				new Response.ErrorListener()
+				{
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// error
+						//Log.d("Error.Response", error.toString());
+					}
+				}
+		) {
+			@Override
+			protected Map<String, String> getParams()
+			{
+				Map<String, String>  params = new HashMap<String, String>();
+				params.put("data", dataString);
+
+
+				return params;
+			}
+		};
+
+		// Adding the request to the queue along with a unique string tag
+		MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
+
+	}
+
+	private void sendHttpSoundPost(final ArrayList<Sound>data) throws JSONException {
+
+
+
+		JSONArray jsonArray = new JSONArray();
+		try{
+			for(int i = 0; i < data.size(); i++){
+				JSONObject formDetailsJson = new JSONObject();
+				formDetailsJson.put("deviceId", userId);
+				formDetailsJson.put("time", data.get(i).getTime());
+				formDetailsJson.put("network_id", data.get(i).getNetwork_id());
+				formDetailsJson.put("ip_address", data.get(i).getIp_address());
+				formDetailsJson.put("battery", data.get(i).getBattery());
+				formDetailsJson.put("light", data.get(i).getLight());
+				formDetailsJson.put("socioAct", data.get(i).getSocio_activity());
+				formDetailsJson.put("decibel", data.get(i).getDecibel());
+				jsonArray.put(formDetailsJson);
+
+			}
+
+		}catch(Exception e){
+
+		}
+
+
+		final String dataString = jsonArray.toString();
+
+		String url = ApiUrl.insertDataUrl;
+
+
+
+		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+				new Response.Listener<String>()
+				{
+					@Override
+					public void onResponse(String response) {
+						// response
+						int httpRes = Integer.valueOf(response);
+						if(httpRes==1) {
+							for (int i = 0; i < data.size(); i++) {
+								//System.out.println(tempAa.get(i).getTime());
+								Sound d = data.get(i);
+								realm.beginTransaction();
+								d.setUploaded(1);
+								realm.commitTransaction();
+							}
+						}
+					}
+				},
+				new Response.ErrorListener()
+				{
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// error
+						//Log.d("Error.Response", error.toString());
+					}
+				}
+		) {
+			@Override
+			protected Map<String, String> getParams()
+			{
+				Map<String, String>  params = new HashMap<String, String>();
+				params.put("data", dataString);
+
+
+				return params;
+			}
+		};
+
+		// Adding the request to the queue along with a unique string tag
+		MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
+
+	}
 
 
 
