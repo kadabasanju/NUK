@@ -2,8 +2,9 @@ package dev.sutd.hdb;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
+
+import android.support.v4.content.LocalBroadcastManager;
+
 import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
@@ -32,60 +33,62 @@ public class ActivityRecognizedService extends IntentService {
         }
     }
 
+
+
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         for( DetectedActivity activity : probableActivities ) {
+            String act = "";
+            double confi =0;
             switch( activity.getType() ) {
                 case DetectedActivity.IN_VEHICLE: {
                     Log.e("ActivityRecogition", "In Vehicle: " + activity.getConfidence());
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Vehicle";
-                    }
+                    act = "Vehicle";
+                    confi = activity.getConfidence();
                     break;
                 }
                 case DetectedActivity.ON_BICYCLE: {
                     Log.e( "ActivityRecogition", "On Bicycle: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Bicycle";
-                    }
+                    act = "Bicycle";
+                    confi = activity.getConfidence();
                     break;
                 }
                 case DetectedActivity.ON_FOOT: {
                     Log.e( "ActivityRecogition", "On Foot: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Foot";
-                    }
+                    act = "Foot";
+                    confi = activity.getConfidence();
                     break;
                 }
                 case DetectedActivity.RUNNING: {
                     Log.e( "ActivityRecogition", "Running: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Running";
-                    }
+                    act = "Running";
+                    confi = activity.getConfidence();
                     break;
                 }
                 case DetectedActivity.STILL: {
                     Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Still";
-                    }
+                    act = "Still";
+                    confi = activity.getConfidence();
                     break;
                 }
-                case DetectedActivity.TILTING: {
-                    Log.e( "ActivityRecogition", "Tilting: " + activity.getConfidence() );
-                    break;
-                }
+
                 case DetectedActivity.WALKING: {
                     Log.e( "ActivityRecogition", "Walking: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 75 ) {
-                        MainService.gActivity = "Walking";
-                    }
+                    act = "Foot";
+                    confi = activity.getConfidence();
                     break;
                 }
-                case DetectedActivity.UNKNOWN: {
-                    Log.e( "ActivityRecogition", "Unknown: " + activity.getConfidence() );
-                    break;
-                }
+
             }
+            //broadcast this!
+            if(act!="") {
+                Intent intent = new Intent("ACTIVITY_RECOGNITION_GOOGLE");
+                // You can also include some extra data.
+                intent.putExtra("activity", act);
+                intent.putExtra("confidence", confi);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
+
         }
     }
+
 }

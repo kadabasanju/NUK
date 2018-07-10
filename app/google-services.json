@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "207364458297",
+    "firebase_url": "https://hdb-app.firebaseio.com",
+    "project_id": "hdb-app",
+    "storage_bucket": "hdb-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207364458297:android:7e8cafc2d3093ecf",
+        "android_client_info": {
+          "package_name": "dev.sutd.hdb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207364458297-vgtqnchq9ul9vhd2ukr1pscinrf8hm0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2rJwmzRfHP5vpCmfcK5Q7ZLoKCDQD64I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

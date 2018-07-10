@@ -6,5 +6,6 @@ public class ApiUrl {
     //public final static String insertDataUrl = "http://103.24.77.43/mongoapi/insert_data.php";
     public final static String insertUserUrl = "http://103.24.77.43/mongoapi/insert_user_info.php";
     public final static String insertDataUrl = "http://103.24.77.43/mongoapi/insert_activity_data.php";
-
+    public final static String insertPreparedUrl = "http://103.24.77.43/mongoapi/insert_prepared_data.php";
+    public final static String fetchVisitsUrl = "http://103.24.77.43/mongoapi/fetch_mongo_wifi_poi.php";
 }

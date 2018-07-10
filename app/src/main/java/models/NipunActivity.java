@@ -5,28 +5,29 @@ import io.realm.RealmObject;
 /**
  * Created by Sanj on 2/23/2018.
  */
-public class GeoActivity extends RealmObject {
+public class NipunActivity extends RealmObject {
     //activity Recognition by Google
-    private String gAct;
 
     //Transportation mode
+    private String nAct;
 
     private int uploaded ;
     private long time;
 
-    public GeoActivity(){
+    public NipunActivity(){
         uploaded=0;
     }
 
-    public String getgAct() {
-        return gAct;
+
+
+
+    public String getnAct() {
+        return nAct;
     }
 
-    public void setgAct(String gAct) {
-        this.gAct = gAct;
+    public void setnAct(String nAct) {
+        this.nAct = nAct;
     }
-
-
 
     public int getUploaded() {
         return uploaded;

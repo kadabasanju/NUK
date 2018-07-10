@@ -23,51 +23,7 @@ public class ConnectionDetector {
 	    public ConnectionDetector(Context context){
 	        this._context = context;
 	    }
-	 
 
-	        public void isNetworkAvailable(final Handler handler, final int timeout) {
-	            // ask fo message '0' (not connected) or '1' (connected) on 'handler'
-	            // the answer must be send before before within the 'timeout' (in milliseconds)
-
-	            new Thread() {
-	                private boolean responded = false;   
-	                @Override
-	                public void run() { 
-	                    // set 'responded' to TRUE if is able to connect with google mobile (responds fast) 
-	                    new Thread() {      
-	                        @Override
-	                        public void run() {
-	                            HttpGet requestForTest = new HttpGet("http://202.94.70.41");
-	                            try {
-	                                new DefaultHttpClient().execute(requestForTest); // can last...
-	                                responded = true;
-	                                
-	                            } 
-	                            catch (Exception e) {
-									System.out.println(e);
-	                            }
-	                        } 
-	                    }.start();
-
-	                    try {
-	                        int waited = 0;
-	                        while(!responded && (waited < timeout)) {
-	                            sleep(100);
-	                            if(!responded ) { 
-	                                waited += 100;
-	                            }
-	                        }
-	                    } 
-	                    catch(InterruptedException e) {} // do nothing 
-	                    finally { 
-	                        if (!responded) { handler.sendEmptyMessage(0); } 
-	                        else { handler.sendEmptyMessage(1); }
-	                    }
-	                }
-	            }.start();
-	        }
-	        
-	        
 	     private static final String TAG_SUCCESS = "success";
 
 	     //JSONParser jsonParser = new JSONParser();
