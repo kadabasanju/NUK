@@ -1,0 +1,128 @@
+<resources>
+    <string name="app_name">DSBJ</string>
+    <string name="action_settings">Settings</string>
+    <string name="wifi_is_not_enabled_msg">WiFi is not enabled</string>
+    <string name="wifi_disabling_msg">WiFi is currently being disabling</string>
+    <string name="wifi_disabled_msg">WiFi is disabled</string>
+    <string name="wifi_enabling_msg">WiFi is currently being enabling</string>
+    <string name="wifi_enabled_msg">WiFi is enabled</string>
+    <string name="wifi_unknown_state_msg">WiFi is in an unknown state</string>
+    <string name="networks_found_msg">%d networks found</string>
+    <string name="cluster_points_msg">Number of cluster points: </string>
+    <string name="cluster_wait_msg">Clustering started, pls wait..</string>
+    <string name="queue_add_msg">Scan added to list</string>
+    <string name="title_activity_visits">VisitsActivity</string>
+    <string name="title_activity_front_end">FrontEndActivity</string>
+    <string name="accept_t_c">
+    <b>Participate in research</b> \n<i>
+        -Make better recommendations \n
+        -Build livelier neighborhood. \n
+        -Data is anonymized for research use only\n
+        -Research team cannot identify you\n
+        -Safeguarded under SUTD Institutional Review Board </i>"
+    </string>
+
+    <string name="unaccept_t_c"><b>Opt out of research</b></string>
+    <string name="terms">
+        The Service is developed as a part of a research project
+        \n\nThis Service is part of a research project by the Singapore University of Technology and Design (SUTD),
+                together with Housing and Development Board (HDB) and Urban Redevelopment Authority (URA), about how to
+                improve the quality of life and promote collaborative urban communities in Singapore’s public housing
+                neighborhoods. Through this digital platform, you are allowed to browse and even create both formal and
+                informal events / activities / programs (e.g. cooking class, fitness class, Christmas celebrations,
+                basketball game, etc.) on the immediate community/neighborhood level.
+        \nBy choosing the ’Continue and Participate in Research Project’ radio button, you are agreeing to
+                participate in this research project.
+
+        \nOther than understanding your community activity involvements, we will also collect your geo-spatial
+                information anonymously. The information collected includes:
+        \n\n 1. Your geolocation
+        \n 2. Your physical movement (e.g. walking, running, cycling)
+        \n 3. Your mobile phone battery level and light information
+
+        \n\nYou may also use the service without participating in this research. If you wish to continue using this
+                service without partaking in our research, kindly select the ‘Continue without Participating in
+                Research
+                Project’ radio button. However, we will still geolocate you and collect data about your community
+                activity
+                involvements in order to prompt you to events / activities / programs nearby that interest you.
+
+        \nYour decision to participate in this research is voluntary and completely up to you. Nonetheless, we
+                may
+                highlight to you that, your participation in this research will not only help us provide you with
+                better
+                recommendation and service, but also contribute to the development of design prototype that caters to
+                the
+                needs of your community. You can also withdraw from the research at any time without giving any reasons
+                by
+                editing your account settings to opt out from our study. A more detailed terms and conditions and
+                participant information document are provided below. Read the information below before deciding whether
+                to
+                take part in this study.     \n
+    </string>
+
+
+    <string name="Fullterms">
+        By downloading, installing and using the Service, the Licensee (User) agrees to the terms and conditions which shall bind the Licensee. If the Licensee does not agree to the terms and conditions, the Licensor does not license the Service to the Licensee and the Licensee must refrain from downloading, installing and using the Service. The Service can only be downloaded, installed and used in accordance with these Terms and conditions.
+        \n
+        \n1. Under the license, the licensee may:
+        \n(a) Download, install and use the Service for the Licensee’s personal purposes on any compatible device owned or controlled by the Licensee; and
+        \n(b) Receive and use any updates to the Service as may be provided by the Licensor from time to time.
+        \n
+        \n2. Consent to processing of data
+        \nLicensor may process personal data in accordance with the Licensor’s Privacy Policy, which among other things explains how and for which purposes data is processed, and the controls available when you use the Service.
+        \n
+        \n2.1 Privacy Policy Data collection and processing
+        \nThe App collects data from your phone to provide you with an easy way to track your community and neighborhood lifestyle, in terms of your community activities engagements on the immediate neighborhood level. When you install, run or use our services we collect:
+        \n
+        \n• Your interests and community activity involvements (by tracking your self-report interests and activity signups)
+        \n
+        \n• Your location. Our system starts to collect location data from sources such as GPS, Wi-Fi and cell towers once you install the App and consent to the App’s tracking your location. We also collect Accelerometer samples, Wi-Fi network IDs, activity data, and places you identify with the Services. You may choose to stop our collection of location data by removing the App from your phone.
+        \n
+        \n• Information you provide. If you choose to install our app, you provide us your username, email address, age, gender, etc., which will only be used to retrieve your information when necessary. All other data including location data collected from you will have a unique identifier which cannot be matched to your personal data. The information received by us are in form of variables, and nothing pertaining to your personal info that can be misused.
+        \n
+        \n• Information from your device. This includes information about your operating system, device identifier, carrier, language, battery performance, Wi-Fi or other network connections, or other data that you permit the App to access on your device including through permissions on your device (e.g. Google Play on Android).
+        \n
+        \n• Communications with us. If you communicate with us, we collect the information and content you provide to us.
+        \n
+        \nWe process and use the information we collect about you in a variety of ways. The primary purpose is to track your community activities engagements on the immediate neighborhood level, as well as the activities that you are interested in. We upload your information from your device over a secured connection to our servers in order to analyze the data and identify your activities, routes and places.
+        \n
+        \nOther ways we use your data include to develop aggregated analyses and reports that help us improve our algorithms, measure and understand how our Services are used, and to develop design prototype that caters to the needs of the community.
+        \n
+        \nData retention
+        \nWe may retain anonymous information regarding your activities without retaining your personal information. This often means that we will keep anonymous information for the duration of our study.
+        \n
+        \n3. Intellectual Property Rights
+        \n
+        \n3.1 The Licensee acknowledges that:
+        \n(a) All intellectual property rights in the Service belong to the Licensor;
+        \n(b) Rights in the Service are licensed, not sold, to the Licensee;
+        \n(c) The Licensee has no rights in or to the Service other than the License; and
+        \n(d) The Licensee has no right to have access to the Service in source code form.
+        \n
+        \n4. Limitation of liability
+        \n
+        \n4.1 The Licensee acknowledges that the Service has not been developed to meet the individual requirements of the Licensee, and that it is therefore the Licensee’s responsibility to ensure that the facilities and functions of the Service meet the requirements of the Licensee.
+        \n
+        \n4.2 The Licensor is not in any way responsible for the use made by the Licensee of the Service. The Licensee understands that certain risks are inherent in all physical activities, and the Licensee assumes sole responsibility for any change in his or her behavior. It may be necessary to consult a physician before increasing one’s physical activity.
+        \n
+        \n4.3 To the extent not prohibited by law, in no event shall the Licensor be liable for personal injury, or any incidental, special, indirect, consequential or punitive damages whatsoever, including, without limitation:
+        \n
+        \n(a) Loss of profit,
+        \n(b) Loss of business,
+        \n(c) Business interruption,
+        \n(d) Loss of business opportunity,
+        \n(e) Deterioration of phone’s performance
+        \n(f) Loss of data or,
+        \n(g) Any other commercial damages or losses
+        \n
+        \nArising out of or related to the Licensee’s use or inability to use the Service, however caused, whether in contract, tort or otherwise and even if the Licensor has been advised of the possibility of such damages.
+        \n
+        \n5. Termination
+        \n
+        \nThe License is effective until terminated by the Licensee or the Licensor. The Licensee’s rights under the License shall terminate automatically without notice from the Licensor if the Licensee fails to comply with any term or condition of these Terms of Use.                               \n</string>
+
+    <string name="title_activity_terms">TermsActivity</string>
+    <string name="title_activity_main_frontend">MainActivityFrontend</string>
+    <string name="title_activity_error">ErrorActivity</string>
+</resources>

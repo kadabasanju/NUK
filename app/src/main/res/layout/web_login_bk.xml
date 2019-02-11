@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@android:color/background_light"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffa600">
+
+        <RelativeLayout
+
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+             >
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="329dp"
+                android:layout_height="144dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/dsbjlogowhite"
+                />
+
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_below="@+id/imageView">
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="97dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:text="Login"
+                android:enabled="false"
+                android:textColor="#505050"
+                 />
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:text="Register"
+                android:onClick="register"
+                android:textColor="#505050"
+                android:layout_alignParentEnd="true"
+                 />
+
+            <View
+
+                android:layout_width="70dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@id/loginButton"
+
+                android:layout_marginLeft="20dp"
+                android:background="#ffa600"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/loginButton" />
+
+
+
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="USERNAME"
+                android:inputType="textPersonName"
+                android:layout_below="@id/loginButton" />
+
+
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="PASSWORD"
+                android:inputType="textPassword"
+                android:layout_below="@id/username" />
+
+            <Button
+                android:id="@+id/forgotButton"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:text="forgot password?"
+                android:textSize="10sp"
+                android:textColor="#505050"
+                android:onClick="forgotPassword"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/password" />
+
+            <Button
+                android:id="@+id/confirmLogin"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="18dp"
+                android:ems="10"
+                android:background="@drawable/button_press"
+                android:text="CONTINUE"
+                android:onClick="login"
+                android:textColor="@android:color/white"
+                android:layout_below="@id/forgotButton"
+                />
+        </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

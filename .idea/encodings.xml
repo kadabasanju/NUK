@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/libs/arm64-v8a" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/libs/armeabi-v7a" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/libs/libandroid_tensorflow_inference_java.jar" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/libs/x86" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/libs/x86_64" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/RestfulUploads/ConnectionDetector.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/RestfulUploads/MyCustomHostVerifier.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/RestfulUploads/https/MyCustomHostVerifier.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/RestfulUploads/https/MyHttpClient.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/RestfulUploads/https/https.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/dev/sutd/hdb/MainService.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/dev/sutd/hdb/MyApp.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/dev/sutd/hdb/UploadService.java" charset="windows-1252" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

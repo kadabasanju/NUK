@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@android:color/background_light"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFA600"
+        >
+
+        <RelativeLayout
+            android:id="@+id/form_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent" >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="329dp"
+        android:layout_height="144dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/dsbjlogowhite"
+        />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_below="@+id/imageView">
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="97dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:text="Login"
+        android:onClick="login"
+        android:textColor="#505050"
+         />
+
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:text="Register"
+        android:enabled="false"
+        android:textColor="#505050"
+        android:layout_alignParentEnd="true"
+         />
+
+    <View
+
+        android:layout_width="80dp"
+        android:layout_height="5dp"
+        android:layout_marginEnd="8dp"
+        android:background="#FFA600"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/registerButton" />
+
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_below="@id/loginButton"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="NICKNAME"
+            android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="EMAIL"
+        android:inputType="textPersonName"
+        android:layout_below="@id/username" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="PASSWORD"
+        android:inputType="textPassword"
+        android:layout_below="@id/email" />
+
+    <!--<EditText
+        android:id="@+id/rePassword"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+
+        android:hint="RE-TYPE PASSWORD"
+        android:inputType="textPassword"
+        android:layout_below="@id/password" />
+
+    <EditText
+        android:id="@+id/birthYear"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Year of birth"
+        android:inputType="textPersonName"
+        android:layout_below="@id/rePassword" />
+
+
+
+
+            <RadioGroup
+                android:id="@+id/radioGender"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:orientation="horizontal"
+                android:tag="4"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/birthYear"
+                 >
+
+                <RadioButton
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:id="@+id/radioMale"
+                    android:text="Male"
+                    android:textColor="#505050"
+                    android:checked="true"
+                    android:layout_alignParentStart="true"
+                    />
+
+                <RadioButton
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:id="@+id/radioFemale"
+                    android:text="Female"
+                    android:textColor="#505050"
+                    android:layout_alignParentEnd="true"
+                    />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="url"
+                android:inputType="textPersonName"
+                android:layout_below="@id/radioGender" />-->
+
+
+           <!-- <CheckBox android:id="@+id/dataCollectionBox"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:text="Would you like to participate in our research?"
+                android:onClick="onCheckboxClicked"
+                android:checked="true"
+                android:layout_below="@id/password"
+
+                />-->
+
+    <Button
+        android:id="@+id/confirmRegistration"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:background="@drawable/button_press"
+        android:text="CONTINUE"
+        android:onClick="register"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/password"
+        />
+    </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

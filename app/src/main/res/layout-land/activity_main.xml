@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:id="@+id/scrollView"
+    >
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to HDB!"
+            android:textColor="#FFFFFF"
+            android:id="@+id/text"
+
+            android:paddingBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"/>
+        <CalendarView
+
+            android:id="@+id/calModView"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:layout_below="@id/text"
+            android:background="#FFFFFF"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/view_map_button"
+            android:layout_marginRight="10dp"
+            android:layout_below="@id/calModView"
+            android:layout_marginTop="10dp"
+            android:text="Frontend"
+            android:id="@+id/frontend_button"
+            android:onClick="frontend"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/daily_view_button"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/calModView"
+            android:layout_marginTop="10dp"
+            android:text="View Map"
+            android:id="@+id/view_map_button"
+            android:onClick="clusterData"
+
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Daily View"
+            android:onClick="dailyView"
+            android:id="@+id/daily_view_button"
+
+            android:layout_alignTop="@+id/view_map_button"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeline_button"
+            android:text="Timeline"
+            android:onClick="timelineView"
+            android:layout_toRightOf="@id/daily_view_button"
+            android:layout_marginLeft="20dp"
+            android:layout_alignTop="@+id/daily_view_button"
+             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Visit Info"
+            android:onClick="loadVisitData"
+            android:layout_toRightOf="@id/timeline_button"
+            android:layout_marginLeft="20dp"
+            android:layout_alignTop="@+id/daily_view_button"
+            />
+
+
+
+    </RelativeLayout>
+</ScrollView>
