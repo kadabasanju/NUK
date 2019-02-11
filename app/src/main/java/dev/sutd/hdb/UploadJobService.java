@@ -36,15 +36,10 @@ import models.Sound;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class UploadJobService extends JobService {
-    final int maxNumber = 100;
 
-    String userId;
-    Realm realm;
     @Override
     public boolean onStartJob(JobParameters params) {
-        //SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //userId = sharedpreferences.getString("DEVICE_ID", "DEVICE_ID");
-        //realm = RealmController.with(MyApp.getInstance()).getRealm();
+
         mJobHandler.sendMessage( Message.obtain( mJobHandler, 1, params ));
         // tHis needs to be true to say that we will explicitly specify the jobFinished.
         // If it is set to false, the system decides that the method completed on time and needs no confirmation from the developer.
@@ -62,18 +57,9 @@ public class UploadJobService extends JobService {
 
         @Override
         public boolean handleMessage( Message msg ) {
-            try {
-                UploadService.uploadData();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            UploadService.uploadData();
             // To tell the job scheduler that the task has been completed and can dismiss the task!
+
             jobFinished( (JobParameters) msg.obj, false );
             MainService.startUploadProcess();
             return true;

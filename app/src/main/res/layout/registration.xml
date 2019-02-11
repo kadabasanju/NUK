@@ -15,23 +15,44 @@ android:layout_height="fill_parent"
 
     <TableRow android:layout_width="match_parent" android:minHeight="60px" android:layout_weight="1">
 
-      <TextView android:layout_column="1" android:text="Name 姓名 "  android:textStyle="bold|italic" android:textSize="16sp"
+      <TextView android:layout_column="1" android:text="First Name"  android:textStyle="bold|italic" android:textSize="16sp"
         android:padding="3dip"  />
-      <EditText android:id="@+id/name" android:tag="1"
-        android:gravity="left" android:padding="3dip" android:hint="enter name 姓名 " android:inputType="text" android:layout_width="wrap_content"/>
+      <EditText android:id="@+id/firstname" android:tag="1"
+        android:gravity="left" android:padding="3dip" android:hint="first name " android:inputType="text" android:layout_width="wrap_content"/>
+    </TableRow>
+    <TableRow android:layout_width="match_parent" android:minHeight="60px" android:layout_weight="1">
+
+      <TextView android:layout_column="1" android:text="Last Name"  android:textStyle="bold|italic" android:textSize="16sp"
+          android:padding="3dip"  />
+      <EditText android:id="@+id/lastname" android:tag="1"
+          android:gravity="left" android:padding="3dip" android:hint="last name" android:inputType="text" android:layout_width="wrap_content"/>
     </TableRow>
 
     <TableRow android:minHeight="60px" android:layout_weight="1">
-      <TextView android:layout_column="1" android:text="Phone 电话" android:textStyle="bold|italic" android:textSize="16sp"
+      <TextView android:layout_column="1" android:text="Nickname" android:textStyle="bold|italic" android:textSize="16sp"
         android:padding="3dip" />
-      <EditText android:id="@+id/phone" android:tag="2"
-        android:gravity="left" android:padding="3dip" android:hint="enter phone number 电话" android:inputType="number"  android:layout_width="wrap_content"/>
+      <EditText android:id="@+id/nickname" android:tag="2"
+        android:gravity="left" android:padding="3dip" android:hint="Nickname used in this app" android:inputType="text"  android:layout_width="wrap_content"/>
     </TableRow>
-    
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Password" android:textStyle="bold|italic" android:textSize="16sp"
+          android:padding="3dip" />
+      <EditText android:id="@+id/password" android:tag="2"
+          android:gravity="left" android:padding="3dip" android:hint="Password" android:inputType="textPassword"  android:layout_width="wrap_content"/>
+    </TableRow>
+
+    <TableRow android:minHeight="60px" android:layout_weight="1">
+      <TextView android:layout_column="1" android:text="Year of Birth" android:textStyle="bold|italic" android:textSize="16sp"
+          android:padding="3dip" />
+      <EditText android:id="@+id/birth_year" android:tag="2"
+          android:gravity="left" android:padding="3dip" android:hint="Year you were born in (1980)" android:inputType="number"  android:layout_width="wrap_content"/>
+    </TableRow>
+
+
 
     
     <TableRow android:minHeight="60px" android:layout_weight="1">
-      <TextView android:layout_column="1" android:text="Gender 性别" android:textStyle="bold|italic" android:textSize="16sp"
+      <TextView android:layout_column="1" android:text="Gender" android:textStyle="bold|italic" android:textSize="16sp"
         android:padding="3dip" />
       
        <RadioGroup
@@ -55,18 +76,13 @@ android:layout_height="fill_parent"
         
     </TableRow>
     
-    <TableRow android:minHeight="60px" android:layout_weight="1">
-      <TextView android:layout_column="1" android:text="Age 年龄" android:textStyle="bold|italic" android:textSize="16sp"
-        android:padding="3dip" />
-      <EditText android:id="@+id/age" android:tag="5"
-        android:gravity="left" android:padding="3dip" android:hint="enter your age 年龄" android:inputType="number"  android:layout_width="wrap_content"/>
-      </TableRow>
+
       
     <TableRow android:minHeight="60px" android:layout_weight="1">
-      <TextView android:layout_column="1" android:text="Email 邮箱" android:textStyle="bold|italic" android:textSize="16sp"
+      <TextView android:layout_column="1" android:text="Email" android:textStyle="bold|italic" android:textSize="16sp"
         android:padding="3dip" />
       <EditText android:id="@+id/email" android:tag="6"
-        android:gravity="left" android:padding="3dip" android:hint="enter your mail Id 邮箱" android:inputType="text"  android:layout_width="wrap_content"/>
+        android:gravity="left" android:padding="3dip" android:hint="enter your mail Id" android:inputType="text"  android:layout_width="wrap_content"/>
       </TableRow>
       
 
@@ -78,7 +94,7 @@ android:layout_height="fill_parent"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:id="@+id/register"
-     android:text="Register 注册"
+     android:text="Register"
      android:layout_gravity="center"
      android:padding="15dip"
      android:onClick="register"

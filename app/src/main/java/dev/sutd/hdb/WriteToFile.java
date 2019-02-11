@@ -242,7 +242,7 @@ public void buildRound(String pos, StringBuilder path) throws IOException
         "margin: 0px;\n"+
         "padding: 0px }\n"+
     "</style>\n"+
-    "<script src=\"https://maps.googleapis.com/maps/api/js?v=3.exp\"></script>\n"+
+    "<script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyDoa89Swijm5d2QqcUsxHQZfC7c-pYGH-g\"></script>\n"+
     "<script>\n"+
 
 "var citymap = {};\n"+

@@ -1,6 +1,9 @@
 package dev.sutd.hdb;
 
 import android.content.SharedPreferences;
+import android.net.http.SslCertificate;
+import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.GeolocationPermissions;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -22,6 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -29,29 +41,82 @@ import java.util.concurrent.ExecutionException;
 import RestfulUploads.ApiUrl;
 import RestfulUploads.ConnectionDetector;
 
+import static dev.sutd.hdb.FrontEndAdvancedActivity.convertSSLCertificateToCertificate;
+import static dev.sutd.hdb.FrontEndAdvancedActivity.getCertificateForRawResource;
+
 public class VisitsActivity extends AppCompatActivity {
 
     ArrayAdapter adapter;
     ListView visitList;
+    WebView webView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_visits);
+        //
         Bundle b = getIntent().getExtras();
         long startTime = b.getLong("startTime");
         long endTime = b.getLong("endTime");
+        String device_id = b.getString("device_id");
 
         visitList = (ListView)findViewById(R.id.visitsList);
         ConnectionDetector cd = new ConnectionDetector(this);
+        //setContentView(R.layout.web_registration);
         boolean connected;
         try {
             connected = cd.executeTask();
 
             if(connected)
             {
+                setContentView(R.layout.data_plot);
+                webView = (WebView)findViewById(R.id.dataWebView);
+                webView.setWebViewClient(new WebViewClient());
+                WebSettings webSettings = webView.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+                webSettings.setDomStorageEnabled(true);
+                webSettings.setAppCacheEnabled(true);
+                webSettings.setDatabaseEnabled(true);
+                if (18 < Build.VERSION.SDK_INT ){
+                    //18 = JellyBean MR2, KITKAT=19
+                    webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                }
+
+                try {
+                    CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                    InputStream caInput = getResources().openRawResource(R.raw.raw_server_ca_bundle); // stored at \app\src\main\res\raw
+                    final Certificate certificate = cf.generateCertificate(caInput);
+                    caInput.close();
+
+                    Log.e("VISITS", caInput.toString());
+                    webView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+
+                            Log.e("VISITS", error.toString());
+                            SslCertificate sslCertificateServer = error.getCertificate();
+                            Certificate pinnedCert = getCertificateForRawResource(R.raw.raw_data_server, VisitsActivity.this);
+                            Certificate serverCert = convertSSLCertificateToCertificate(sslCertificateServer);
+
+                            if (pinnedCert.equals(serverCert)) {
+                                handler.proceed();
+                            } else {
+                                super.onReceivedSslError(view, handler, error);
+                                Log.e("VISITS", pinnedCert.toString());
+                            }
+                        }
+                    });
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+
+                webView.loadUrl("https://103.24.77.43/nuk_analysis/nuk/layer_one.php?device_id="+device_id+"&start_date="+startTime+"&end_date="+endTime);
+
+
                 Toast.makeText(this, "Please wait while we load the data", Toast.LENGTH_SHORT).show();
 
-                fetchData(startTime,endTime);
+                //fetchData(startTime,endTime);
 
             }
             else {
@@ -70,7 +135,9 @@ public class VisitsActivity extends AppCompatActivity {
     }
 
 
-    private void fetchData(long startTime, long endTime){
+
+
+    /*private void fetchData(long startTime, long endTime){
 
         //System.out.println(jsonArray.toString());
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -126,6 +193,6 @@ public class VisitsActivity extends AppCompatActivity {
             Log.e("upload", "error from php");
         }
 
-    }
+    }*/
 
 }

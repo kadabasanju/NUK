@@ -6,23 +6,22 @@ import io.realm.RealmObject;
  * Created by Hasala on 4/6/2018.
  */
 
-public class POIVisitInfo extends RealmObject {
+public class POIVisitInfoObject  {
 
     private String deviceID;
     private String POI_ID;
     private long startTime;
     private long endTime;
 
-    /*public int getUploaded() {
-        return uploaded;
+    public POIVisitInfoObject(String deviceID, String POI_ID, long startTime, long endTime) {
+        this.deviceID = deviceID;
+        this.POI_ID = POI_ID;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public void setUploaded(int uploaded) {
-        this.uploaded = uploaded;
-    }
 
-    private int uploaded=0;
-*/
+
     public String getDeviceID() {
         return deviceID;
     }

@@ -58,7 +58,7 @@ public class Util {
             };
 
             // Adding the request to the queue along with a unique string tag
-            MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
+           // MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
         }catch(NumberFormatException e){
             Log.e("upload", "error from php");
         }

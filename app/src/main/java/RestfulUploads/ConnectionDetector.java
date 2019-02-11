@@ -18,10 +18,11 @@ import java.util.concurrent.ExecutionException;
 
 public class ConnectionDetector {	     
 	    private Context _context;
-	   
+		private String URL;
 	     
 	    public ConnectionDetector(Context context){
 	        this._context = context;
+	        //this.URL = url;
 	    }
 
 	     private static final String TAG_SUCCESS = "success";

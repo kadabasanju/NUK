@@ -479,7 +479,7 @@ public class GraphViewActivity extends Activity {
 					  }
 				  }
 
-				  Log.i("googleact before",geoAct.size()+"");
+				  //Log.i("googleact before",geoAct.size()+"");
 
 
 				  /*for (int i = 0; i<geoAct.size();i++) {
@@ -511,7 +511,7 @@ public class GraphViewActivity extends Activity {
 					  }
 				  }*/
 				  ArrayList<Node> googleAct = getGoogleData(geoAct, sTime, eTime);
-				  Log.i("size after",googleAct.size()+"");
+				  //Log.i("size after",googleAct.size()+"");
 					  for (int i = 0; i <googleAct.size();i++) {
 
 						  paint.setColor(Color.BLUE);
@@ -897,7 +897,7 @@ public class GraphViewActivity extends Activity {
 						Node aa = new Node(tym,acty);
 						resAct.add(aa);
 					}
-					Log.i("act",acty);
+					//Log.i("act",acty);
 				}
 			}
 			else
@@ -906,7 +906,7 @@ public class GraphViewActivity extends Activity {
 					if(!data.get(i).getActivity().equals("")) {
 						Node aa = new Node(data.get(i).getTime(), data.get(i).getActivity());
 						resAct.add(aa);
-						Log.i("act", acty);
+						//Log.i("act", acty);
 					}
 					//Log.i("act", data.get(i).getActivity());
 				}
@@ -936,30 +936,30 @@ public class GraphViewActivity extends Activity {
 
 			String acty;
 			if(i == -1){
-				Log.i("entered",i+"");
+				//Log.i("entered",i+"");
 				temp = stime;
 				acty = "Still:100";
 				next = gpsAct.get(0).getTime();
 
-				Log.i(i+"",next+"");
+				//Log.i(i+"",next+"");
 			}
 			else if(i == gpsAct.size()-1){
-				Log.i("entered_last",i+"");
+				//Log.i("entered_last",i+"");
 				next = etime;
 				temp = gpsAct.get(i).getTime();
 				acty = "Still:100";
-				Log.i(i+"",gpsAct.get(i).getgAct());
+				//Log.i(i+"",gpsAct.get(i).getgAct());
 
 			}
 
 			else{
-				Log.i("entered_middle",i+"");
+				//Log.i("entered_middle",i+"");
 				acty = gpsAct.get(i).getgAct();
-				Log.i("entered_middle",acty);
+				//Log.i("entered_middle",acty);
 				temp = gpsAct.get(i).getTime();
-				Log.i("middle_temp",temp+"");
+				//Log.i("middle_temp",temp+"");
 				next = gpsAct.get(i+1).getTime();
-				Log.i("middle_next",next+"");
+				//Log.i("middle_next",next+"");
 			}
 
 			long diff = next-temp;
@@ -977,12 +977,12 @@ public class GraphViewActivity extends Activity {
 					Node aa = new Node(tym,acty);
 					resAct.add(aa);
 				}
-				Log.i(i+"",gpsAct.get(i).getgAct());
+				//Log.i(i+"",gpsAct.get(i).getgAct());
 			}
 			else
 			{
 
-				Log.i(i+"",gpsAct.get(i).getgAct());
+				//Log.i(i+"",gpsAct.get(i).getgAct());
 				Node aa = new Node(gpsAct.get(i).getTime(),gpsAct.get(i).getgAct());
 				resAct.add(aa);
 			}

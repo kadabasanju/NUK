@@ -1,46 +1,53 @@
 package dev.sutd.hdb;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.KeyStore;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.GZIPOutputStream;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 
 import RestfulUploads.ApiUrl;
 import RestfulUploads.ConnectionDetector;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import models.Data;
 import models.GeoActivity;
-import models.NipunActivity;
+import models.ScanInformation;
+import models.ScanObject;
 import models.Sound;
 
 public class UploadService extends Service {
-	
-	 
-	 final static int maxNumber = 100;
 
 	static String userId;
 	static Realm realm;
+	static RealmResults<Data> locData;
+	static RealmResults<GeoActivity> geoResults;
+	static RealmResults<Sound> soundResults;
+	static ConnectionDetector cd;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -66,491 +73,285 @@ public class UploadService extends Service {
      public int onStartCommand(Intent intent, int flags, int startId) {
             // TODO Auto-generated method stub
 
-		 //SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-			 // = sharedpreferences.getString("DEVICE_ID", "DEVICE_ID");
-			//	System.out.println("device_id   "+ userId);
-
-		 		//callType = intent.getStringExtra("ServiceCall");
-				ConnectionDetector cd = new ConnectionDetector(this);
-				boolean connected;
-				try {
-					connected = cd.executeTask();
-				
-				if(connected)
-				{
-					System.out.println("Connected");
-					//realm = RealmController.with(MyApp.getInstance()).getRealm();
-					uploadData();
-
-
-
-
-				}
-					else {
-					System.out.println("Not Connected");
-				}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-
+		  cd = new ConnectionDetector(this );
+		 uploadData();
 
 		 return super.onStartCommand(intent, flags, startId);
      }
      
 
-    	 
+    	public static void uploadData(){
+
+			boolean connected;
+			try {
+				ConnectionDetector cd = new ConnectionDetector(MyApp.getInstance());
+				connected = cd.executeTask();
+
+				if(connected)
+				{
+					System.out.println("Connected");
+					uploadAllData();
+				}
+				else {
+					System.out.println("Not Connected");
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
      
 
-	public static void  uploadData() throws JSONException, ExecutionException, InterruptedException {
+	public static void  uploadAllData()   {
 
 				SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
 				userId = sharedpreferences.getString("DEVICE_ID", "DEVICE_ID");
 				realm = RealmController.with(MyApp.getInstance()).getRealm();
-	    	
-	      		//Log.i("success", "uploading");
 
-				//Uploading location data
-				RealmResults<Data> results =RealmController.with(MyApp.getInstance()).getPendingUpload();
+				locData =RealmController.with(MyApp.getInstance()).getPendingUpload();
+				geoResults =RealmController.with(MyApp.getInstance()).getGeoPendingUpload();
+				soundResults =RealmController.with(MyApp.getInstance()).getSoundPendingUpload();
+				ArrayList<ScanInformation> wifiData= queryWifiFromDatabase();
+				try{
+					JSONObject jsonObj = new JSONObject();
+					JSONArray locJsonArray = new JSONArray();
+					for(int i = 0; i < locData.size(); i++){
+						JSONObject formDetailsJson = new JSONObject();
+						formDetailsJson.put("lat", locData.get(i).getLatitude());
+						formDetailsJson.put("lng", locData.get(i).getLongitude());
+						formDetailsJson.put("time", locData.get(i).getTime());
+						formDetailsJson.put("speed", locData.get(i).getSpeed());
+						formDetailsJson.put("alt", locData.get(i).getAltitude());
+						formDetailsJson.put("accu",locData.get(i).getAccuracy());
 
-					int numOfLoops = (results.size()/maxNumber) +1;
-					if(results.size()%maxNumber==0){
-						numOfLoops -= 1;
+						locJsonArray.put(formDetailsJson);
 					}
 
-	  				for(int j = 0; j<numOfLoops; j++){
-						int maxIndex = (j+1)*maxNumber > results.size()?results.size():(j+1)*maxNumber;
-						ArrayList<Data>tempAa = new ArrayList();
-						JSONObject responseDetailsJson = new JSONObject();
-						JSONArray jsonArray = new JSONArray();
-						for(int k =j*maxNumber; k<maxIndex; k++) {
-							if (results.get(k) == null) {
-								break;
-							}
+					JSONArray geoArray = new JSONArray();
+					for(int i = 0; i < geoResults.size(); i++){
+						JSONObject formDetailsJson = new JSONObject();
 
-							tempAa.add(results.get(k));
-							//.out.println(results.get(k).getTime());
+						formDetailsJson.put("time", geoResults.get(i).getTime());
+						formDetailsJson.put("act", geoResults.get(i).getgAct());
+						geoArray.put(formDetailsJson);
+					}
+
+					JSONArray miscArray = new JSONArray();
+					for(int i = 0; i < soundResults.size(); i++){
+						JSONObject formDetailsJson = new JSONObject();
+						formDetailsJson.put("time", soundResults.get(i).getTime());
+						formDetailsJson.put("n_id", soundResults.get(i).getNetwork_id());
+						formDetailsJson.put("ip", soundResults.get(i).getIp_address());
+						formDetailsJson.put("bat", soundResults.get(i).getBattery());
+						formDetailsJson.put("light", soundResults.get(i).getLight());
+						miscArray.put(formDetailsJson);
+					}
+					JSONArray wifiJsonArray = new JSONArray();
+					for(int i = 0; i < wifiData.size(); i++) {
+						JSONObject formDetailsJson = new JSONObject();
+						formDetailsJson.put("time", wifiData.get(i).getTimestamp());
+						JSONArray array = new JSONArray();
+						RealmList<ScanObject> scanArr = wifiData.get(i).getScanObjectList();
+						for (int j = 0; j < scanArr.size(); j++) {
+							JSONObject obj = new JSONObject();
+							ScanObject scanObj = scanArr.get(j);
+							obj.put("RSSI", scanObj.getRSSI());
+							obj.put("MAC", scanObj.getBSSID());
+							array.put(obj);
 						}
-						sendHttpPost(tempAa);
+						formDetailsJson.put("scans", array);
 
+						wifiJsonArray.put(formDetailsJson);
 					}
 
+					jsonObj.put("device_id",userId);
+					jsonObj.put("wifi",wifiJsonArray);
+					jsonObj.put("locations",locJsonArray);
+					jsonObj.put("act",geoArray);
+					jsonObj.put("misc",miscArray);
+					System.out.println(jsonObj.toString());
+					UploadAsyncClass up = new UploadAsyncClass();
+					up.execute(jsonObj.toString());
 
-				// Uploading geoactivity data
-				RealmResults<GeoActivity> geoResults =RealmController.with(MyApp.getInstance()).getGeoPendingUpload();
+				}catch(Exception e){
 
-				numOfLoops = (geoResults.size()/maxNumber) +1;
-				if(geoResults.size()%maxNumber==0){
-					numOfLoops -= 1;
 				}
 
-				for(int j = 0; j<numOfLoops; j++){
-					int maxIndex = (j+1)*maxNumber > geoResults.size()?geoResults.size():(j+1)*maxNumber;
-					ArrayList<GeoActivity>tempga = new ArrayList<>();
+	}
 
-					for(int k =j*maxNumber; k<maxIndex; k++) {
-						if (geoResults.get(k) == null) {
-							break;
-						}
+	//query from database
+	public static ArrayList<ScanInformation> queryWifiFromDatabase() {
+		ArrayList<ScanInformation> listOfScans = new ArrayList<>();
 
-						tempga.add(geoResults.get(k));
+		final RealmResults<ScanInformation> receivedData = realm.where(ScanInformation.class).findAll();
 
-					}
-
-
-					sendHttpGeoPost(tempga);
-				}
+		listOfScans.addAll(realm.copyFromRealm(receivedData));
+		return listOfScans;
+	}
 
 
+	public static void deleteAllAfterClustering(){
+		realm.executeTransaction(new Realm.Transaction() {
+									 @Override
+									 public void execute(Realm realm) {
+										 RealmResults<ScanInformation> result = realm.where(ScanInformation.class).findAll(); // delete records up to end of yesterday
+										 result.deleteAllFromRealm();
+									 }
+								 }
+		);
+		Log.i("Upload service","Deleted Scan Info from the database");
+	}
+	public static void deleteAllAfterUploading(){
+		realm.executeTransaction(new Realm.Transaction() {
+									 @Override
+									 public void execute(Realm realm) {
+										 RealmResults<Data> result = realm.where(Data.class).findAll(); // delete records up to end of yesterday
+										 result.deleteAllFromRealm();
+									 }
+								 }
+		);
+		realm.executeTransaction(new Realm.Transaction() {
+									 @Override
+									 public void execute(Realm realm) {
+										 RealmResults<GeoActivity> result = realm.where(GeoActivity.class).findAll(); // delete records up to end of yesterday
+										 result.deleteAllFromRealm();
+									 }
+								 }
+		);
+		realm.executeTransaction(new Realm.Transaction() {
+									 @Override
+									 public void execute(Realm realm) {
+										 RealmResults<Sound> result = realm.where(Sound.class).findAll(); // delete records up to end of yesterday
+										 result.deleteAllFromRealm();
+									 }
+								 }
+		);
 
-		// Uploading sound data
-		RealmResults<Sound> soundResults =RealmController.with(MyApp.getInstance()).getSoundPendingUpload();
-
-		numOfLoops = (soundResults.size()/maxNumber) +1;
-		if(soundResults.size()%maxNumber==0){
-			numOfLoops -= 1;
-		}
-
-		for(int j = 0; j<numOfLoops; j++){
-			int maxIndex = (j+1)*maxNumber > soundResults.size()?soundResults.size():(j+1)*maxNumber;
-			ArrayList<Sound>tempsa = new ArrayList();
-
-			for(int k =j*maxNumber; k<maxIndex; k++) {
-				if (soundResults.get(k) == null) {
-					break;
-				}
-
-				tempsa.add(soundResults.get(k));
-			}
-
-
-			sendHttpSoundPost(tempsa);
-		}
-
-	  		
- 	
-
-	    
+		Log.i("Upload service","Deleted all Info from the database");
 	}
 
 
 
-	public static void sendHttpPost(final ArrayList<Data>data) throws JSONException {
+	public static class UploadAsyncClass extends AsyncTask<String, String, String> {
 
-		JSONArray jsonArray = new JSONArray();
-		try{
-			for(int i = 0; i < data.size(); i++){
-				JSONObject formDetailsJson = new JSONObject();
-				formDetailsJson.put("deviceId", userId);
-				formDetailsJson.put("lat", data.get(i).getLatitude());
-				formDetailsJson.put("lng", data.get(i).getLongitude());
-				formDetailsJson.put("time", data.get(i).getTime());
-				formDetailsJson.put("speed", data.get(i).getSpeed());
-				formDetailsJson.put("alt", data.get(i).getAltitude());
-				formDetailsJson.put("accu",data.get(i).getAccuracy());
-				//formDetailsJson.put("wifiAP", data.get(i).getWifiAPs());
-				//Log.i("location "+i, getDateString(data.get(i).getTime()));
-				jsonArray.put(formDetailsJson);
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+
+			// implement API in background and store the response in current variable
+			String current = "0";
+			try{
+                // Load CAs from an InputStream
+// (could be from a resource or ByteArrayInputStream or ...)
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+// From https://www.washington.edu/itconnect/security/ca/load-der.crt
+                InputStream caInput = MyApp.getInstance().getResources().openRawResource(R.raw.raw_data_server);//new BufferedInputStream(new FileInputStream("raw_server_ca_bundle.crt"));
+                Certificate ca;
+                try {
+                    ca = cf.generateCertificate(caInput);
+                    System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+                } finally {
+                    caInput.close();
+                }
+
+// Create a KeyStore containing our trusted CAs
+                String keyStoreType = KeyStore.getDefaultType();
+                KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+                keyStore.load(null, null);
+                keyStore.setCertificateEntry("ca", ca);
+
+// Create a TrustManager that trusts the CAs in our KeyStore
+                String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+                tmf.init(keyStore);
+
+// Create an SSLContext that uses our TrustManager
+                SSLContext context = SSLContext.getInstance("TLS");
+                context.init(null, tmf.getTrustManagers(), null);
+
+
+
+
+                String body = params[0];
+				URL url = new URL(ApiUrl.insertCompressedData);
+				HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+				conn.setSSLSocketFactory(context.getSocketFactory());
+				conn.setDoOutput(true);
+				conn.setRequestProperty("Content-encoding", "gzip");
+				conn.setRequestProperty("Content-type", "application/octet-stream");
+				GZIPOutputStream dos = new GZIPOutputStream(conn.getOutputStream());
+				dos.write(body.getBytes());
+				dos.flush();
+				dos.close();
+				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				StringBuilder builder = new StringBuilder();
+
+				String decodedString = "";
+				while ((decodedString = in.readLine()) != null) {
+					builder.append(decodedString);
+				}
+				in.close();
+				Log.e("Upload", builder.toString());
+				current = builder.toString();
+				return current;
+
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return current;
+		}
+
+		@Override
+		protected void onPostExecute(String s) {
+
+			if(Integer.parseInt(s)==4){
+				deleteAllAfterClustering();
+				deleteAllAfterUploading();
+				/*for (int i = 0; i < locData.size(); i++) {
+					//System.out.println(tempAa.get(i).getTime());
+					if(realm.isInTransaction()){
+						realm.commitTransaction();
+					}
+					realm.beginTransaction();
+					Data d = locData.get(i);
+					d.deleteFromRealm();
+					realm.commitTransaction();
+				}
+				for (int i = 0; i < geoResults.size(); i++) {
+					//System.out.println(tempAa.get(i).getTime());
+					if(realm.isInTransaction()){
+						realm.commitTransaction();
+					}
+					realm.beginTransaction();
+					GeoActivity d = geoResults.get(i);
+					d.deleteFromRealm();
+					realm.commitTransaction();
+				}
+				for (int i = 0; i < soundResults.size(); i++) {
+					//System.out.println(tempAa.get(i).getTime());
+					if(realm.isInTransaction()){
+						realm.commitTransaction();
+					}
+					realm.beginTransaction();
+					Sound d = soundResults.get(i);
+					d.deleteFromRealm();
+					realm.commitTransaction();
+				}*/
+
+
 			}
 
-		}catch(Exception e){
-
-		}
-		//System.out.println(jsonArray.toString());
-
-		final String dataString = jsonArray.toString();
-		//System.out.println(dataString);
-		String url = ApiUrl.insertPreparedUrl;
-
-
-		try {
-			StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-					new Response.Listener<String>() {
-						@Override
-						public void onResponse(String response) {
-							// response
-
-							int httpRes = Integer.valueOf(response);
-							if (httpRes == 1) {
-								for (int i = 0; i < data.size(); i++) {
-									//System.out.println(tempAa.get(i).getTime());
-									Data d = data.get(i);
-									if(realm.isInTransaction()){
-										realm.commitTransaction();
-									}
-									realm.beginTransaction();
-									d.setUploaded(1);
-									realm.commitTransaction();
-								}
-							}
-						}
-					},
-					new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							// error
-							Log.e("Error.Response", error.toString());
-						}
-					}
-			) {
-				@Override
-				protected Map<String, String> getParams() {
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("data", dataString);
-					params.put("type", "1");
-					System.out.println(params);
-					return params;
-				}
-			};
-			//queue.add(postRequest);
-
-			// Adding the request to the queue along with a unique string tag
-			MyApp.getInstance().addToRequestQueue(postRequest, "postRequest");
-		}catch(NumberFormatException e){
-			Log.e("upload", "error from php");
 		}
 
 	}
-
-
-
-	private static void sendHttpGeoPost(final ArrayList<GeoActivity>data) throws JSONException {
-
-
-
-		JSONArray jsonArray = new JSONArray();
-		try{
-			for(int i = 0; i < data.size(); i++){
-				JSONObject formDetailsJson = new JSONObject();
-				formDetailsJson.put("deviceId", userId);
-				formDetailsJson.put("time", data.get(i).getTime());
-				formDetailsJson.put("gAct", data.get(i).getgAct());
-				jsonArray.put(formDetailsJson);
-			}
-
-		}catch(Exception e){
-
-		}
-
-
-		final String dataString = jsonArray.toString();
-
-		String url = ApiUrl.insertPreparedUrl;
-
-
-		try{
-		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-				new Response.Listener<String>()
-				{
-					@Override
-					public void onResponse(String response) {
-						// response
-                        Log.i("act response", response);
-						int httpRes = Integer.valueOf(response);
-						if(httpRes==1) {
-							for (int i = 0; i < data.size(); i++) {
-								//System.out.println(tempAa.get(i).getTime());
-								if(realm.isInTransaction()){
-									realm.commitTransaction();
-								}
-                                realm.beginTransaction();
-                                GeoActivity d = data.get(i);
-								d.setUploaded(1);
-								realm.commitTransaction();
-							}
-						}
-					}
-				},
-				new Response.ErrorListener()
-				{
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						// error
-						//Log.d("Error.Response", error.toString());
-					}
-				}
-		) {
-			@Override
-			protected Map<String, String> getParams()
-			{
-				Map<String, String>  params = new HashMap<String, String>();
-				params.put("data", dataString);
-				params.put("type","2");
-
-
-				return params;
-			}
-		};
-
-		// Adding the request to the queue along with a unique string tag
-		MyApp.getInstance().addToRequestQueue(postRequest,"postRequest");
-		}catch(NumberFormatException e){
-			Log.e("upload", "error from php");
-		}
-	}
-
-
-	private static void sendHttpSoundPost(final ArrayList<Sound>data) throws JSONException {
-
-
-
-		JSONArray jsonArray = new JSONArray();
-		try{
-			for(int i = 0; i < data.size(); i++){
-				JSONObject formDetailsJson = new JSONObject();
-				formDetailsJson.put("deviceId", userId);
-				formDetailsJson.put("time", data.get(i).getTime());
-				formDetailsJson.put("n_id", data.get(i).getNetwork_id());
-				formDetailsJson.put("ip", data.get(i).getIp_address());
-				formDetailsJson.put("bat", data.get(i).getBattery());
-				formDetailsJson.put("light", data.get(i).getLight());
-
-				jsonArray.put(formDetailsJson);
-
-			}
-
-		}catch(Exception e){
-
-		}
-
-
-		final String dataString = jsonArray.toString();
-
-		String url = ApiUrl.insertPreparedUrl;
-
-
-		try {
-			StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-					new Response.Listener<String>() {
-						@Override
-						public void onResponse(String response) {
-							// response
-                            Log.i("misc response", response);
-							int httpRes = Integer.valueOf(response);
-							if (httpRes == 1) {
-								for (int i = 0; i < data.size(); i++) {
-									//System.out.println(tempAa.get(i).getTime());
-									if(realm.isInTransaction()){
-										realm.commitTransaction();
-									}
-									Sound d = data.get(i);
-									if(realm.isInTransaction()){
-										realm.commitTransaction();
-									}
-									realm.beginTransaction();
-									d.setUploaded(1);
-									realm.commitTransaction();
-								}
-							}
-						}
-					},
-					new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							// error
-							//Log.d("Error.Response", error.toString());
-						}
-					}
-			) {
-				@Override
-				protected Map<String, String> getParams() {
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("data", dataString);
-					params.put("type", "4");
-
-
-					return params;
-				}
-			};
-
-			// Adding the request to the queue along with a unique string tag
-			MyApp.getInstance().addToRequestQueue(postRequest, "postRequest");
-		}catch(NumberFormatException e){
-			Log.e("upload", "error from php");
-		}
-	}
-
-
-	/*public static byte[] compress(String data) throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
-		GZIPOutputStream gzip = new GZIPOutputStream(bos);
-		gzip.write(data.getBytes());
-		gzip.close();
-		byte[] compressed = bos.toByteArray();
-		bos.close();
-		return compressed;
-	}*/
-
- /*private JSONArray prepareData(ArrayList<Data>data){
-	//String result ="";
-	 Map<String,Map<String,Map<String,Data>>> map = new HashMap<>();
-	 for(int i=0;i<data.size();i++) {
-		 String[] date_chunk = getDateTimeChunks(data.get(i).getTime());
-		 // checks if the date is present
-	 	 if(map.containsKey(date_chunk[0])){
-			 Map<String,Map<String,Data>> map_min = map.get(date_chunk[0]);
-			 //checks if the minute is present
-			 if(map_min.containsKey(date_chunk[1])){
-				 Map<String,Data> map_sec = map_min.get(date_chunk[1]);
-				 //checks if the second is present
-				 if(map_sec.containsKey(date_chunk[2])){
-					//do nothing
-				 }
-				 //
-				 else{
-					 //add the data.
-					 map_sec.put(date_chunk[2],data.get(i));
-				 }
-			 }
-			 //if map does not contain minute information, add it
-			 else{
-				 Map<String,Data> map_sec = new HashMap<>();
-				 map_sec.put(date_chunk[2],data.get(i));
-				 map_min.put(date_chunk[1],map_sec);
-			 }
-
-		 }
-		 //if map does not contain hour information, add it
-		 else{
-			 Map<String,Map<String,Data>> map_min = new HashMap<>();
-			 Map<String,Data> map_sec = new HashMap<>();
-			 map_sec.put(date_chunk[2],data.get(i));
-			 map_min.put(date_chunk[1],map_sec);
-			 map.put(date_chunk[0],map_min);
-		 }
-	 }
-
-	 System.out.println(map.toString());
-	 Object[] mapkeys = map.keySet().toArray();
-	 JSONArray jsonArray = new JSONArray();
-	 for(int i=0;i<mapkeys.length;i++){
-		 try {
-			 JSONObject formDetailsJson = new JSONObject();
-			 formDetailsJson.put("deviceId", userId);
-			 formDetailsJson.put("time", mapkeys[i]);
-
-			 JSONObject min_data = new JSONObject();
-			 //keys for min map
-			 Object[] minkeys = map.get(mapkeys[i]).keySet().toArray();
-			 for(int j=0;j<minkeys.length;j++){
-
-				 Object[]seckeys = map.get(mapkeys[i]).get(minkeys[j]).keySet().toArray();
-				 JSONObject sec_data = new JSONObject();
-				 //keys for sec map
-				 for(int k=0;k<seckeys.length;k++){
-					 JSONObject d = new JSONObject();
-					 Data dat = map.get(mapkeys[i]).get(minkeys[j]).get(seckeys[k]);
-					 d.put("latitude", dat.getLatitude());
-					 d.put("longitude", dat.getLongitude());
-					 d.put("speed", dat.getSpeed());
-					 d.put("altitude", dat.getAltitude());
-					 d.put("accuracy", dat.getAccuracy());
-					 d.put("wifiAP", dat.getWifiAPs());
-					 sec_data.put(seckeys[k].toString(),d);
-				 }
-				 min_data.put(minkeys[j].toString(),sec_data);
-
-			 }
-
-			 formDetailsJson.put("min",min_data);
-			 jsonArray.put(formDetailsJson);
-		 }catch (JSONException je){
-
-		 }
-
-
-	 }
-	 //result = jsonArray.toString();
-
-	 return jsonArray;
- }
-
-private String[] getDateTimeChunks(long time){
-	String[] res = new String[3];
-	SimpleDateFormat formatter    =   new    SimpleDateFormat    ("yyyy-MM-dd HH");
-
-	Date d = new Date(time);
-	String    strTime    =    formatter.format(d);
-
-	SimpleDateFormat formatter1    =   new    SimpleDateFormat    ("mm");
-	String    min    =    formatter1.format(d);
-
-	SimpleDateFormat formatter2    =   new    SimpleDateFormat    ("ss");
-	String    sec    =    formatter2.format(d);
-
-	res[0]=strTime;
-	res[1]=min;
-	res[2]=sec;
-	return res;
-}
-*/
-
-
 
 }

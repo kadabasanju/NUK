@@ -15,25 +15,27 @@ import models.ScanInformation;
 // max distance - 0.5
 public class RunClusterer {
     //ArrayList<Map<CharSequence,Integer>> listOfMaps;// Array List of Hashmaps for multiple scan data
-    ArrayList<ScanInformation> listOfWifi;
-    ArrayList<ArrayList<ScanInformation>> clusterPoints;
-    int minNumElements = 4;
+    //ArrayList<ScanInformation> listOfWifi;
+
+    int minNumElements = 3;
     double maxDistance = 0.5;
 
     public ArrayList<ArrayList<ScanInformation>> setupAndPerformClusterer(ArrayList<ScanInformation> wifiList, double threshold) {
-        this.listOfWifi = wifiList;
-        //System.out.println("WiFi list size: "+wifiList.size());
-        DBSCANClusterer<ScanInformation> clusterer;
+        //this.listOfWifi = new ArrayList<>();
+        //this.listOfWifi.addAll(wifiList);
+        ArrayList<ArrayList<ScanInformation>> clusterPoints = new ArrayList<>();
+        System.out.println("WiFi list size: "+wifiList.size());
+        DBSCANClusterer<ScanInformation> clusterer ;
         try {
-            clusterer = new DBSCANClusterer(listOfWifi, minNumElements, maxDistance, new DistanceMetricNumbers());
+            clusterer = new DBSCANClusterer(wifiList, minNumElements, maxDistance, new DistanceMetricNumbers());
             clusterer.setMinimalNumberOfMembersForCluster(minNumElements);
             clusterer.setMaximalDistanceOfClusterMembers(threshold);
-            clusterer.setInputValues(listOfWifi);
+            clusterer.setInputValues(wifiList);
             clusterer.setDistanceMetric(new DistanceMetricNumbers());
 
             clusterPoints = clusterer.performClustering();
             //System.out.println("Cluster Points");
-            //System.out.println(clusterPoints.size());
+            System.out.println("cluster size: "+clusterPoints.size());
         }
         catch (DBSCANClusteringException e){
             System.out.println(e.getMessage());
